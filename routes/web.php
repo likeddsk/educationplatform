@@ -10,7 +10,21 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('welcome');
+});
+*/
+//项目后台
+Route::group([
+  'prefix'    => 'admin',
+  'namespace' => 'Back'
+],function(){
+  //后台首页
+  Route::get('/index','IndexController@index');
+  Route::get('/welcome','IndexController@welcome');
+});
+//项目前台
+Route::group([],function(){
+
 });
