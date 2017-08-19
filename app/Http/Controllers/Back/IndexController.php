@@ -11,6 +11,7 @@ class IndexController extends Controller
     public function index(){
       return view('back.index.index');
     }
+    //欢迎页面
     public function welcome(){
       return view('back.index.welcome');
     }
