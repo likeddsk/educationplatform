@@ -15,4 +15,8 @@ class IndexController extends Controller
     public function welcome(){
       return view('back.index.welcome');
     }
+    //后台登陆
+    public function login(){
+      return view('back.index.login');
+    }
 }

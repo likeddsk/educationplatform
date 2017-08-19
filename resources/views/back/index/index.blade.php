@@ -1,30 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="renderer" content="webkit|ie-comp|ie-stand">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-<LINK rel="Bookmark" href="{{ asset('back') }}/favicon.ico" >
-<LINK rel="Shortcut Icon" href="{{ asset('back') }}/favicon.ico" />
-<!--[if lt IE 9]>
-<script type="text/javascript" src="lib/html5.js"></script>
-<script type="text/javascript" src="lib/respond.min.js"></script>
-<script type="text/javascript" src="lib/PIE_IE678.js"></script>
-<![endif]-->
-<link rel="stylesheet" href="{{ asset('back') }}/static/h-ui/css/H-ui.min.css" />
-<link rel="stylesheet" href="{{ asset('back') }}/static/h-ui.admin/css/H-ui.admin.css" />
-<link rel="stylesheet" href="{{ asset('back') }}/lib/Hui-iconfont/1.0.7/iconfont.css" />
-<link rel="stylesheet" href="{{ asset('back') }}/lib/icheck/icheck.css" />
-<link rel="stylesheet" href="{{ asset('back') }}/static/h-ui.admin/skin/default/skin.css" id="skin" />
-<link rel="stylesheet" href="{{ asset('back') }}/static/h-ui.admin/css/style.css" />
-<title>H-ui.admin v2.5</title>
-</head>
-<body>
+@extends('back.layout.common')
+@section('content')
 <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
-		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="/aboutHui.shtml">H-ui.admin</a> <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/aboutHui.shtml">H-ui</a> <span class="logo navbar-slogan f-l mr-10 hidden-xs">v2.5</span> <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="/aboutHui.shtml">educationplatform</a> <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/aboutHui.shtml">H-ui</a> <span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span> <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 			<nav class="nav navbar-nav">
 				<ul class="cl">
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
@@ -179,63 +157,58 @@
 		<li id="delete">delete </li>
 	</ul>
 </div>
-
-
-<script type="text/javascript" src="{{ asset('back') }}/lib/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="{{ asset('back') }}/lib/layer/2.1/layer.js"></script>
-<script type="text/javascript" src="{{ asset('back') }}/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
-<script type="text/javascript" src="{{ asset('back') }}/static/h-ui/js/H-ui.js"></script>
-<script type="text/javascript" src="{{ asset('back') }}/static/h-ui.admin/js/H-ui.admin.js"></script>
-<script type="text/javascript">
-$(function(){
-	$(".Hui-tabNav-wp").contextMenu('myMenu1', {
-		bindings: {
-			'open': function(t) {
-				alert('Trigger was '+t.id+'\nAction was Open');
-			},
-			'email': function(t) {
-				alert('Trigger was '+t.id+'\nAction was Email');
-			},
-			'save': function(t) {
-				alert('Trigger was '+t.id+'\nAction was Save');
-			},
-			'delete': function(t) {
-				alert('Trigger was '+t.id+'\nAction was Delete')
+<script src="{{ asset('back') }}/lib/layer/2.1/layer.js"></script>
+<script src="{{ asset('back') }}/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+<script src="{{ asset('back') }}/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script>
+	$(function(){
+		$(".Hui-tabNav-wp").contextMenu('myMenu1', {
+			bindings: {
+				'open': function(t) {
+					alert('Trigger was '+t.id+'\nAction was Open');
+				},
+				'email': function(t) {
+					alert('Trigger was '+t.id+'\nAction was Email');
+				},
+				'save': function(t) {
+					alert('Trigger was '+t.id+'\nAction was Save');
+				},
+				'delete': function(t) {
+					alert('Trigger was '+t.id+'\nAction was Delete')
+				}
 			}
-		}
+		});
 	});
-});
-/*资讯-添加*/
-function article_add(title,url){
-	var index = layer.open({
-		type: 2,
-		title: title,
-		content: url
-	});
-	layer.full(index);
-}
-/*图片-添加*/
-function picture_add(title,url){
-	var index = layer.open({
-		type: 2,
-		title: title,
-		content: url
-	});
-	layer.full(index);
-}
-/*产品-添加*/
-function product_add(title,url){
-	var index = layer.open({
-		type: 2,
-		title: title,
-		content: url
-	});
-	layer.full(index);
-}
-/*用户-添加*/
-function member_add(title,url,w,h){
-	layer_show(title,url,w,h);
-}
+	/*资讯-添加*/
+	function article_add(title,url){
+		var index = layer.open({
+			type: 2,
+			title: title,
+			content: url
+		});
+		layer.full(index);
+	}
+	/*图片-添加*/
+	function picture_add(title,url){
+		var index = layer.open({
+			type: 2,
+			title: title,
+			content: url
+		});
+		layer.full(index);
+	}
+	/*产品-添加*/
+	function product_add(title,url){
+		var index = layer.open({
+			type: 2,
+			title: title,
+			content: url
+		});
+		layer.full(index);
+	}
+	/*用户-添加*/
+	function member_add(title,url,w,h){
+		layer_show(title,url,w,h);
+	}
 </script>
-</body>
-</html>
+@endsection

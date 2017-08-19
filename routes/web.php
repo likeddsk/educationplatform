@@ -23,6 +23,7 @@ Route::group([
   //后台首页
   Route::get('/index','IndexController@index');
   Route::get('/welcome','IndexController@welcome');
+  Route::get('/login','IndexController@login');
 });
 //项目前台
 Route::group([],function(){
