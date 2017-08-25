@@ -35,15 +35,20 @@ return [
     |
     */
 
-    'guards' => [
+    'guards' => [ //授权服务类型
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'users', //授权服务类型[自定义]
         ],
 
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
+        ],
+
+        'admin' => [
+            'driver' => 'session', //通过什么方式记录登陆状态
+            'provider' => 'admin', //设置验证权限服务
         ],
     ],
 
@@ -74,6 +79,10 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        'admin' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
     ],
 
     /*
