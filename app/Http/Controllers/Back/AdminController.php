@@ -4,21 +4,24 @@ namespace App\Http\Controllers\Back;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 
 class AdminController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 显示管理员列表   通过get请求
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Admin $admin )
     {
-        //
+      $data['adminList'] = $admin->get();
+      // dump($data['adminList']);
+      return view('back.admin.index',$data);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 显示添加管理员的表单   通过get请求
      *
      * @return \Illuminate\Http\Response
      */
@@ -28,7 +31,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 保存由create表单提交的数据[提交数据、保存数据]   通过post请求
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -39,7 +42,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 显示一条数据   通过get请求
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -50,7 +53,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 显示编辑管理员的表单   通过get请求
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -61,7 +64,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 接受保存由edit表单提交过来的数据[接收数据、保存编辑数据]   通过put请求
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -73,7 +76,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 移除指定ID的一条/多条数据   http的delete请求
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
