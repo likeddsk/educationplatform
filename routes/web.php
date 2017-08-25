@@ -32,6 +32,8 @@ Route::group([
       //管理员资源路由
       // Route::resource($uri,$controller) $uri路由地址 $controller资源控制器名
       Route::resource('/admin','AdminController');
+      //ajax分页请求地址
+      Route::post('/admin/ajax','AdminController@ajaxGetList');
   });
 });
 //项目前台

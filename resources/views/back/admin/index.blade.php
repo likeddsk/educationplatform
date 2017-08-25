@@ -27,12 +27,12 @@
 				<th width="100">邮箱</th>
 				<th width="60">角色</th>
 				<th width="130">加入时间</th>
-				<th width="30">是否已启用</th>
+				<th width="50">是否已启用</th>
 				<th width="70">操作</th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach( $adminList as $item )
+{{--		@foreach( $adminList as $item )
 				<tr class="text-c">
 				<td><input type="checkbox" value="{{ $item->id }}" name=""></td>
 				<td>{{ $item->id }}</td>
@@ -52,7 +52,7 @@
 				<td class="td-status"><span class="label label-success radius">已启用</span></td>
 				<td class="td-manage"><a style="text-decoration:none" onClick="admin_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','admin-add.html','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
 			</tr>
-			@endforeach
+			@endforeach --}}
 		</tbody>
 	</table>
 </div>
@@ -80,6 +80,63 @@ $('.datatables').DataTable({
 	     "orderable": false
 	}],
 	"stateSave": true,  // 是否在刷新页面以后还要记录排序的状态
+	"serverSide": true, //开启提交请求给服务器的功能
+	"ajax":{ //ajax请求,datatables自动帮我们发起请求
+		"url":"{{ url('admin/admin/ajax') }}", //请求地址
+		"type":"POST", //请求方法
+		"headers":{'X-CSRF-TOKEN':'{{ csrf_token() }}'}, //附带参数,这段代码是固定的
+	},
+	"columns":[ //使用columns 接受服务器返回数据
+		//{'data':'字段名','defaultContent':'默认值','className':'如果有外观样式要求,写上css类名'}
+		{'data':'a',"defaultContent":""}, //一个字段对应一个json值
+		{'data':'id',"defaultContent":""},
+		{'data':'username',"defaultContent":""},
+		{'data':'nickname',"defaultContent":""},
+		{'data':'sex',"defaultContent":""},
+		{'data':'avatar',"defaultContent":"<img src='/back/img/male.jpg' width='50' />"},
+		{'data':'mobile',"defaultContent":""},
+		{'data':'email',"defaultContent":""},
+		{'data':'role_id',"defaultContent":""},
+		{'data':'created_at',"defaultContent":""},
+		{'data':'disabled_at',"defaultContent":"",'className':'td-status'},
+		{'data':'id',"defaultContent":"",'calssName':'td-manage'},
+	],
+	"createdRow":function(row,data,dataIndex){
+		$(row).children().css('text-align','center');
+		//row当前行的tr标签
+		//data当前行的data标签
+		//dataIndex当前行的data数据的下标
+	$(row).children().eq(0).html('<input type="checkbox" value="'+data.id+'" name="del[]">');
+
+	if( data.sex == 1 ){
+		$(row).children().eq(4).html( '男' );
+		if(!data.avatar){
+			$(row).children().eq(5).html( '<img src="/back/img/male.jpg" width="50" />' );
+		}
+	}else if(data.sex==2){
+		$(row).children().eq(4).html( '女' );
+	if(!data.avatar){
+		$(row).children().eq(5).html( '<img src="/back/img/female.jpg" width="50" />' );
+	}
+	}else{
+		$(row).children().eq(4).html( '保密' );
+		if( !data.avatar){
+			$(row).children().eq(5).html( '<img src="/back/img/3.jpg" width="50" />' );
+		}
+	}
+	// 判断如果当前管理员有头像则直接显示
+	if( data.avatar ){
+		$(row).children().eq(5).html( '<img src="'+data.avatar+'" width="50" />' );
+	}
+
+	if( !!data.disabled_at ){ // 双取反可以把数据强制转成布尔值
+		$(row).children().eq(10).html('<span class="label label-default radius">已禁用</span>');
+	}else{
+		$(row).children().eq(10).html('<span class="label label-success radius">已启用</span>');
+	}
+
+	$(row).children().eq(11).html('<a style="text-decoration:none" onClick="admin_stop(this,\'10001\')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit(\'管理员编辑\',\'admin-add.html\',\'1\',\'800\',\'500\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,\''+data.id+'\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>');
+	}
 });
 
 /*
