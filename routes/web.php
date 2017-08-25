@@ -20,10 +20,16 @@ Route::group([
   'prefix'    => 'admin',
   'namespace' => 'Back'
 ],function(){
-  //后台首页
-  Route::get('/index','IndexController@index');
-  Route::get('/welcome','IndexController@welcome');
-  Route::get('/login','IndexController@login');
+  //后台登陆
+  Route::match(['get','post'],'/login','IndexController@login');
+  Route::group(['middleware'=>['CheckAdminLogin'] ],function(){
+      //后台首页
+      Route::get('/index','IndexController@index');
+      //后台首页的欢迎页
+      Route::get('/welcome','IndexController@welcome');
+      //管理员退出
+      Route::get('logout','IndexController@logout');
+  });
 });
 //项目前台
 Route::group([],function(){
