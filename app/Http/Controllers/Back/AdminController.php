@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Back;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -28,7 +29,7 @@ class AdminController extends Controller
    */
   public function create()
   {
-      //
+    return view('back.admin.create');
   }
 
   /**
@@ -39,7 +40,40 @@ class AdminController extends Controller
    */
   public function store(Request $request)
   {
-      //
+    //判断是否有ajax请求
+    if( $request->ajax() ){
+      //接受前台数据
+      $data = $request->only('username','nickname','password','password2',
+      'sex','mobile','email','disabled_at');
+      //验证规则
+      $role = [
+        'username' => 'required|unique:admin',
+        'password' => 'required|between:6,16|same:password2',
+        'sex'      => 'numeric',
+        'mobile'   => 'regex:/\d{11}/',
+        'email'    => 'email',
+      ];
+      //错误返回数据
+      $message = [
+        'username.required'     => '账号不能为空',
+        'username.unique:admin' => '账号已存在',
+        'password.required'     => '密码不能为空',
+        'password.between'      => '密码必须6至16位',
+        'password.same'         => '两次密码不一致',
+        'mobile.regex'          => '手机号不正确',
+        'email.email'           => '邮箱不正确',
+      ];
+      //验证
+      $validator = Validator::make($data,$role,$message);
+      //验证不通过
+      if ( $validator->fails() ) {
+        //验证错误返回错误信息
+        return [
+          'status'       => false,
+          'errormessage' => $validator->messages(),
+        ];
+      }
+    }
   }
 
   /**
