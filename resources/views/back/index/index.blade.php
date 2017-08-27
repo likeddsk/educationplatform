@@ -161,9 +161,7 @@
 		<li id="delete">delete </li>
 	</ul>
 </div>
-<script src="{{ asset('back') }}/lib/layer/2.1/layer.js"></script>
 <script src="{{ asset('back') }}/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
-<script src="{{ asset('back') }}/static/h-ui.admin/js/H-ui.admin.js"></script>
 <script>
 	$(function(){
 		$(".Hui-tabNav-wp").contextMenu('myMenu1', {

@@ -47,38 +47,17 @@ class AdminController extends Controller
       //接受前台数据
       $data = $request->only('username','nickname','password','password2',
       'sex','mobile','email','disabled_at','avatar');
-      // dump($data);
-      //验证规则
-      $role = [
-        'username' => 'required|unique:admin',
-        'password' => 'required|between:6,16|same:password2',
-        'sex'      => 'numeric',
-        'mobile'   => 'regex:/\d{11}/|unique:admin',
-        'email'    => 'email|unique:admin',
-      ];
-      //错误返回数据
-      $message = [
-        'username.required'     => '账号不能为空',
-        'username.unique:admin' => '账号已存在',
-        'password.required'     => '密码不能为空',
-        'password.between'      => '密码必须6至16位',
-        'password.same'         => '两次密码不一致',
-        'mobile.regex'          => '手机号不正确',
-        'email.email'           => '邮箱不正确',
-        'mobile.unique:admin'  => '手机号已存在',
-        'email.unique:admin'    => '邮箱已存在',
-      ];
-      //验证
-      $validator = Validator::make($data,$role,$message);
-      //验证不通过
-      // dump($validator->fails());
-      if ( $validator->fails() ) {
-        //验证错误返回错误信息
-        return [
-          'status'       => false,
-          'errormessage' => $validator->messages(),
-        ];
+
+      // 可以把验证的规则和代码转义到模型中
+       $validator = $admin->create_validator($data);
+       // 验证结果
+       if( $validator->fails() ){
+         return [
+           'status'       => false,
+           'errormessage' => $validator->messages(), // 返回所有的错误信息
+         ];
       }
+
       // 数据调整
       $data['disabled_at'] = $data['disabled_at']?date('Y-m-d H:i:s'):null;
       $data['password']    = bcrypt( $data['password'] );
@@ -113,9 +92,13 @@ class AdminController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function edit($id)
+  public function edit(Admin $admin,Request $request)
   {
-      //
+    // 当我们把id参数发送给控制器的参数列表中，
+    // 声明必须是一个模型的时候，
+    // 则Laravel会自动帮我们查询对应id的数据
+    $data['adminInfo'] = $admin;
+    return view('back.admin.edit', $data);
   }
 
   /**
@@ -125,9 +108,38 @@ class AdminController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, Admin $admin)
   {
-      //
+    //判断是都有ajax数据
+    if ( $request->ajax() ) {
+      //接收数据
+      $data = $request->only('username','nickname','sex',
+      'mobile','email','disabled_at');
+
+      // 这里的 edit_validator 是我们自定义的验证数据的方法
+      $result = $admin->edit_validator($data,$admin,$request);
+      if( $result['status'] ){ // 如果验证成功，则结果返回$data数据
+
+        $data = $result['data'];
+      }else{                 // 如果验证失败！则结果返回给前端ajax
+        return $result;
+      }
+
+      // 数据调整
+      $data['disabled_at'] = $data['disabled_at']?date('Y-m-d H:i:s'):null;
+
+      // 验证成功，保存数据
+      $res = $admin->update($data); // create添加成功以后返回一条数据，否则返回false
+
+      if($res){
+        return ['status'=>true];
+      }else{
+        return [
+          'status'       => false,
+          'errormessage' => ['编辑失败！'], // 返回所有的错误信息
+        ];
+      }
+    }
   }
 
   /**

@@ -32,8 +32,8 @@
 			</tr>
 		</thead>
 		<tbody>
-{{--		@foreach( $adminList as $item )
-				<tr class="text-c">
+{{--	@foreach( $adminList as $item )
+			<tr class="text-c">
 				<td><input type="checkbox" value="{{ $item->id }}" name=""></td>
 				<td>{{ $item->id }}</td>
 				<td>{{ $item->username }}</td>
@@ -135,7 +135,7 @@ $('.datatables').DataTable({
 			$(row).children().eq(10).html('<span class="label label-success radius">已启用</span>');
 		}
 
-		$(row).children().eq(11).html('<a style="text-decoration:none" onClick="admin_stop(this,\'10001\')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit(\'管理员编辑\',\'admin-add.html\',\'1\',\'800\',\'500\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,\''+data.id+'\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>');
+		$(row).children().eq(11).html('<a style="text-decoration:none" onClick="admin_stop(this,\'10001\')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit(\'管理员编辑\',\'/admin/admin/'+data.id+'/edit\',\'1\',\'800\',\'500\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,\''+data.id+'\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>');
 	}
 });
 
