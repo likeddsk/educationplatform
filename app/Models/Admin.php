@@ -11,8 +11,8 @@ class Admin extends Authenticatable
     protected $table = 'admin';
     //重新定义主键
     protected $primaryKey = 'id';
+
     //定义允许编辑的字段
-    /*
-    pretected $fillable = ['id', 'username', 'nickname', 'avatar', 'sex', 'password', 'email', 'mobile', 'created_at', 'updated_at', 'login_rec', 'login_ip', 'disabled_at', 'deleted_at', 'remember_token'];
-    */
+    protected $fillable = ['id', 'username', 'nickname', 'avatar', 'sex', 'password', 'email', 'mobile', 'created_at', 'updated_at', 'login_rec', 'login_ip', 'disabled_at', 'deleted_at', 'remember_token'];
+
 }

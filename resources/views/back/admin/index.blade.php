@@ -106,36 +106,36 @@ $('.datatables').DataTable({
 		//row当前行的tr标签
 		//data当前行的data标签
 		//dataIndex当前行的data数据的下标
-	$(row).children().eq(0).html('<input type="checkbox" value="'+data.id+'" name="del[]">');
+		$(row).children().eq(0).html('<input type="checkbox" value="'+data.id+'" name="del[]">');
 
-	if( data.sex == 1 ){
-		$(row).children().eq(4).html( '男' );
+		if( data.sex == 1 ){
+			$(row).children().eq(4).html( '男' );
+			if(!data.avatar){
+				$(row).children().eq(5).html( '<img src="/back/img/male.jpg" width="50" />' );
+			}
+		}else if(data.sex==2){
+			$(row).children().eq(4).html( '女' );
 		if(!data.avatar){
-			$(row).children().eq(5).html( '<img src="/back/img/male.jpg" width="50" />' );
+			$(row).children().eq(5).html( '<img src="/back/img/female.jpg" width="50" />' );
 		}
-	}else if(data.sex==2){
-		$(row).children().eq(4).html( '女' );
-	if(!data.avatar){
-		$(row).children().eq(5).html( '<img src="/back/img/female.jpg" width="50" />' );
-	}
-	}else{
-		$(row).children().eq(4).html( '保密' );
-		if( !data.avatar){
-			$(row).children().eq(5).html( '<img src="/back/img/3.jpg" width="50" />' );
+		}else{
+			$(row).children().eq(4).html( '保密' );
+			if( !data.avatar){
+				$(row).children().eq(5).html( '<img src="/back/img/3.jpg" width="50" />' );
+			}
 		}
-	}
-	// 判断如果当前管理员有头像则直接显示
-	if( data.avatar ){
-		$(row).children().eq(5).html( '<img src="'+data.avatar+'" width="50" />' );
-	}
+		// 判断如果当前管理员有头像则直接显示
+		if( data.avatar ){
+			$(row).children().eq(5).html( '<img src="'+data.avatar+'" width="50" />' );
+		}
 
-	if( !!data.disabled_at ){ // 双取反可以把数据强制转成布尔值
-		$(row).children().eq(10).html('<span class="label label-default radius">已禁用</span>');
-	}else{
-		$(row).children().eq(10).html('<span class="label label-success radius">已启用</span>');
-	}
+		if( !!data.disabled_at ){ // 双取反可以把数据强制转成布尔值
+			$(row).children().eq(10).html('<span class="label label-default radius">已禁用</span>');
+		}else{
+			$(row).children().eq(10).html('<span class="label label-success radius">已启用</span>');
+		}
 
-	$(row).children().eq(11).html('<a style="text-decoration:none" onClick="admin_stop(this,\'10001\')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit(\'管理员编辑\',\'admin-add.html\',\'1\',\'800\',\'500\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,\''+data.id+'\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>');
+		$(row).children().eq(11).html('<a style="text-decoration:none" onClick="admin_stop(this,\'10001\')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit(\'管理员编辑\',\'admin-add.html\',\'1\',\'800\',\'500\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,\''+data.id+'\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>');
 	}
 });
 
@@ -155,9 +155,18 @@ function admin_add(title,url,w,h){
 function admin_del(obj,id){
 	layer.confirm('确认要删除吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
-
-		$(obj).parents("tr").remove();
-		layer.msg('已删除!',{icon:1,time:1000});
+		data = {
+      '_token': '{{ csrf_token() }}',
+      '_method': 'delete',
+    };
+    $.post('/admin/admin/'+id,data,function(msg){
+      if( msg.status ){
+        $(obj).parents("tr").remove();
+        layer.msg('已删除!',{icon:1,time:3000});
+      }else{
+        layer.msg('删除失败!',{icon:5,time:3000});
+      }
+    });
 	});
 }
 /*管理员-编辑*/

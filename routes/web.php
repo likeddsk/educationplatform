@@ -34,6 +34,8 @@ Route::group([
       Route::resource('/admin','AdminController');
       //ajax分页请求地址
       Route::post('/admin/ajax','AdminController@ajaxGetList');
+      //接受上传文件保存到七牛云
+      Route::post('admin/upload','AdminController@uploadImage');
   });
 });
 //项目前台

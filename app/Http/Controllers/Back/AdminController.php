@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Validator;
+use League\Flysystem\Filesystem;
+use Overtrue\Flysystem\Qiniu\QiniuAdapter;
 
 class AdminController extends Controller
 {
@@ -38,20 +40,21 @@ class AdminController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request,Admin $admin)
   {
     //判断是否有ajax请求
     if( $request->ajax() ){
       //接受前台数据
       $data = $request->only('username','nickname','password','password2',
-      'sex','mobile','email','disabled_at');
+      'sex','mobile','email','disabled_at','avatar');
+      // dump($data);
       //验证规则
       $role = [
         'username' => 'required|unique:admin',
         'password' => 'required|between:6,16|same:password2',
         'sex'      => 'numeric',
-        'mobile'   => 'regex:/\d{11}/',
-        'email'    => 'email',
+        'mobile'   => 'regex:/\d{11}/|unique:admin',
+        'email'    => 'email|unique:admin',
       ];
       //错误返回数据
       $message = [
@@ -62,15 +65,32 @@ class AdminController extends Controller
         'password.same'         => '两次密码不一致',
         'mobile.regex'          => '手机号不正确',
         'email.email'           => '邮箱不正确',
+        'mobile.unique:admin'  => '手机号已存在',
+        'email.unique:admin'    => '邮箱已存在',
       ];
       //验证
       $validator = Validator::make($data,$role,$message);
       //验证不通过
+      // dump($validator->fails());
       if ( $validator->fails() ) {
         //验证错误返回错误信息
         return [
           'status'       => false,
           'errormessage' => $validator->messages(),
+        ];
+      }
+      // 数据调整
+      $data['disabled_at'] = $data['disabled_at']?date('Y-m-d H:i:s'):null;
+      $data['password']    = bcrypt( $data['password'] );
+
+      // 验证成功，保存数据
+      $res = $admin->create($data); // create添加成功以后返回一条数据，否则返回false
+      if($res){
+        return ['status'=>true];
+      }else{
+        return [
+          'status'       => false,
+          'errormessage' => ['添加失败！'], // 返回所有的错误信息
         ];
       }
     }
@@ -116,9 +136,37 @@ class AdminController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Admin $admin,Request $request)
   {
-      //
+    //判断有ajax传过来的数据
+    if( $request->ajax() ){
+      // 如果有图片地址，则直接调用七牛云扩展包对象把删除删除
+      $domain = config('filesystems.disks.qiniu.domain') .'/';
+      // dump($admin->avatar);
+      $res = explode($domain,$admin->avatar);
+
+      $avatar = isset($res[1])?$res[1]:'';
+
+      $accessKey = config('filesystems.disks.qiniu.accessKey');
+      $secretKey = config('filesystems.disks.qiniu.secretKey');
+      $bucket = config('filesystems.disks.qiniu.bucket');
+      $domain = config('filesystems.disks.qiniu.domain');
+      // or with protocol: https://xxxx.bkt.clouddn.com
+
+      $adapter = new QiniuAdapter($accessKey, $secretKey, $bucket, $domain);
+      $flysystem = new Filesystem($adapter);
+
+      if( $flysystem->has($avatar) ){ // 判断七牛云上面是否存在该图片
+        $flysystem->delete($avatar);
+      }
+
+      $res = $admin->delete();
+      if( $res ){
+        return ['status'=>true];
+      }else{
+        return ['status'=>false];
+      }
+    }
   }
   /**
    * datatable的Ajax获取列表数据
@@ -157,6 +205,39 @@ class AdminController extends Controller
         'data' => $data,
       ];
       return $info; //默认,laravel使用return ,返回的数据会自动转成json
+    }
+  }
+  /**
+   * ajax上传头像的方法
+   * 在这个方法中上传文件到七牛云中
+   */
+  public function uploadImage(Request $request){
+    //接受上传
+    //判断是都有文件上传
+    if ( $request->hasFile('avatar') ) {
+      //file表示的form表单中的name值
+      $file = $request->file('avatar');
+      // dump($file);
+
+      // $file->store('目录','文件名','磁盘');
+      // 目录     指代的就是文件要分目录存储所以需要定义目录名称
+      // 文件名   必须以时间戳为主生成为一个文件，否则文件出现覆盖
+      // 磁盘     存储设备[我们可以通过config/filesystem.php文件来定义我们存储文件的不同磁盘]
+      $path     = 'avatar/' . date('Y-m-d'); // 文件保存目录
+      $filename =  date('YmdHis') . str_random(12) .'.'. $file->extension();
+      $disk     = 'qiniu'; // 设置成public，可以直接通过通过域名来访问
+      // store 和 storeAs
+      // store 会自动帮我们生成文件名
+      // storeAs 需要我们自己定义文件名
+      $res = $file->storeAs($path, $filename, $disk );
+      if ($res) {
+        return [
+          'status' => true,
+          'file'   => config('filesystems.disks.qiniu.domain').'/'.$res,
+        ];
+      }else{
+        return ['status' => false];
+      }
     }
   }
 }
