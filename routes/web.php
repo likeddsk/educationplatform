@@ -31,11 +31,15 @@ Route::group([
       Route::get('/logout','IndexController@logout');
       //管理员资源路由
       // Route::resource($uri,$controller) $uri路由地址 $controller资源控制器名
-      Route::resource('/admin','AdminController');
-      //ajax分页请求地址
-      Route::post('/admin/ajax','AdminController@ajaxGetList');
+      Route::resource('admin','AdminController');
+      //管理员ajax分页请求地址
+      Route::post('admin/ajax','AdminController@ajaxGetList');
       //接受上传文件保存到七牛云
       Route::post('admin/upload','AdminController@uploadImage');
+      //管理员角色资源路由
+      Route::resource('role','RoleController');
+      //角色ajax分页请求地址
+      Route::post('role/ajax','RoleController@ajaxGetList');
   });
 });
 //项目前台

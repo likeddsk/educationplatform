@@ -24,7 +24,6 @@
 
 <script src="{{ asset('back') }}/lib/jquery/1.9.1/jquery.min.js"></script>
 <script src="{{ asset('back') }}/static/h-ui/js/H-ui.js"></script>
-
 <script src="{{asset('back')}}/lib/layer/2.1/layer.js"></script>
 <script src="{{asset('back')}}/lib/icheck/jquery.icheck.min.js"></script>
 <script src="{{asset('back')}}/lib/jquery.validation/1.14.0/jquery.validate.min.js">
@@ -35,5 +34,6 @@
 </script>
 <script src="{{asset('back')}}/static/h-ui.admin/js/H-ui.admin.js"></script>
 @yield('content')
+
 </body>
 </html>
