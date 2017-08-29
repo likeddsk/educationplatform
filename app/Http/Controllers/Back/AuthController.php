@@ -133,5 +133,5 @@ class AuthController extends Controller
         ];
         return $info; // 默认，Laravel使用return 返回的数据会自动转成json
       }
-
+    }
 }
