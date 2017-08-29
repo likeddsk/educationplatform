@@ -40,6 +40,10 @@ Route::group([
       Route::resource('role','RoleController');
       //角色ajax分页请求地址
       Route::post('role/ajax','RoleController@ajaxGetList');
+      //角色权限资源路由器
+      Route::resource('auth','AuthController');
+      //权限ajax分页请求地址
+      Route::post('auth/ajax','AuthController@ajaxGetList');
   });
 });
 //项目前台
