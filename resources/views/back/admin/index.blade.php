@@ -96,7 +96,7 @@ $('.datatables').DataTable({
 		{'data':'avatar',"defaultContent":"<img src='/back/img/male.jpg' width='50' />"},
 		{'data':'mobile',"defaultContent":""},
 		{'data':'email',"defaultContent":""},
-		{'data':'role_id',"defaultContent":""},
+		{'data':'role.role_name',"defaultContent":""},
 		{'data':'created_at',"defaultContent":""},
 		{'data':'disabled_at',"defaultContent":"",'className':'td-status'},
 		{'data':'id',"defaultContent":"",'calssName':'td-manage'},

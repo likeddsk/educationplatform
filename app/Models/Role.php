@@ -12,4 +12,8 @@ class Role extends Model
   protected $primaryKey = 'id';
   //定义允许编辑的字段
   protected $fillable = [ 'role_name', 'note', 'role_auth_ids', 'role_auth_ac'];
+  // 确定管理员模型和角色模型的关系  1对多
+  public function admin(){ // 要和哪个模型关联关系，那么这里函数名就是那个模型对应的表名
+    return $this->hasMany(\App\Models\Admin::class, 'role_id', 'id');
+  }
 }

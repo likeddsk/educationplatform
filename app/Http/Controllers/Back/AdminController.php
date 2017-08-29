@@ -18,9 +18,10 @@ class AdminController extends Controller
    */
   public function index( Admin $admin )
   {
-    // $data['adminList'] = $admin->get();
-    // dump($data['adminList']);
-    // return view('back.admin.index',$data);
+    // $data['adminList'] = $admin->leftJoin('role','role_id','=',"role.id")
+    //    ->limit(20)
+    //    ->get(['role.id as role_id','admin.id','username','nickname']);
+    //  dump( $data['adminList'] );
     return view('back.admin.index');
   }
 
@@ -207,8 +208,7 @@ class AdminController extends Controller
       //$order[0]['column'] //排序的字段下表
       $order_field = $column[ $order[0]['column'] ]['data'];
       $order_status= $order[0]['dir'];
-      $data = $admin->orderby($order_field,$order_status)->offset($start)
-                    ->limit($length)->get(); //获取数据
+      $data = $admin->with('role')->orderby($order_field,$order_status)->offset($start)->limit($length)->get(['admin.*','role_id']);  // 获取数据
       $cnt = $admin->count(); //获取返回数据的总数
       $info = [
         'draw' => $request->get('draw'), //datatables通过ajax请求服务器次数

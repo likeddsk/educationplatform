@@ -16,7 +16,12 @@ class Admin extends Authenticatable
   //定义允许编辑的字段
   protected $fillable = ['id', 'username', 'nickname', 'avatar', 'sex', 'password', 'email', 'mobile', 'created_at', 'updated_at', 'login_rec', 'login_ip', 'disabled_at', 'deleted_at', 'remember_token'];
 
-
+  //关联那个模型,就写上那个模型的表名
+  public function role(){
+    // 因为一个管理员对应一个角色，而一个角色对应着多个管理员，
+    // 所以管理员和角色之间的关系是 多 对 1 ，在关联模型的关系时，使用 belongsTo
+    return $this->belongsTo(\App\Models\Role::class, 'role_id', 'id');
+  }
   // 添加管理员时的数据校验
   public function create_validator($data){
     // 验证数据
