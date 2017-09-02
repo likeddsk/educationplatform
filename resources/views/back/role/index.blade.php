@@ -17,12 +17,12 @@
 				<th scope="col" colspan="9">角色列表</th>
 			</tr>
 			<tr class="text-c">
-				<th width="25"><input type="checkbox" name="" value=""></th>
-				<th width="30">ID</th>
+				<th width="10"><input type="checkbox" name="" value=""></th>
+				<th width="20">ID</th>
 				<th width="30">角色名称</th>
-				<th width="80">角色描述</th>
-				<th width="30">角色权限ID</th>
-				<th width="50">角色的权限列表</th>
+				<th width="30">角色描述</th>
+				<th width="50">角色权限ID</th>
+				<th width="70">角色的权限列表</th>
 				<th width="70">添加时间</th>
 				<th width="70">修改时间</th>
 				<th width="30">操作</th>

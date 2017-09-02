@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Back;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Models\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
@@ -24,9 +25,11 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Auth $auth)
     {
-      return view('back.role.create');
+      $data['topAuth'] = $auth->where('auth_pid','=','0')->get();
+      $data['sonAuth'] = $auth->where('auth_pid','!=','0')->get();
+      return view('back.role.create',$data);
     }
 
     /**
@@ -35,10 +38,10 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,Role $roleModel)
+    public function store(Request $request,Role $roleModel,Auth $auth)
     {
       if ( $request->ajax() ) {
-        $data = $request->only('role_name','note');
+        $data = $request->only('role_name','note','role_auth_ids');
         // dump($data);
         //验证数据
         $role = [
@@ -53,9 +56,20 @@ class RoleController extends Controller
         if ( $validator->fails() ) {
           return [
             'status'        => false,
-            'errormessage'  => $validator->message(), //返回所有的错误信息
+            'errormessage'  => $validator->messages(), //返回所有的错误信息
           ];
         }
+        $data['role_auth_ac'] = $auth->where('auth_pid','!=',0)
+          ->where('is_menu','=',1)
+          ->whereIn('id',$data['role_auth_ids'])
+          ->get(['auth_action','auth_controller'])
+          ->toJson();//toArray() 转换成数组
+        $data['role_auth_addr'] = $auth->where('auth_pid','!=',0)
+          ->where('is_menu','=',1)
+          ->whereIn('id',$data['role_auth_ids'])
+          ->get(['auth_address'])
+          ->toJson();
+        $data['role_auth_ids'] = json_encode( $data['role_auth_ids'] );
         //验证成功,保存数据
         //create添加成功以后返回一条数据,否则返回false;
         $res = $roleModel->create($data);

@@ -11,6 +11,7 @@ class IndexController extends Controller
 {
     //后台首页
     public function index(){
+
       return view('back.index.index');
     }
     //欢迎页面
